@@ -1,0 +1,14 @@
+body {
+  background: url(//elearning.ctu.edu.vn/pluginfile.php/1/theme_lambda/pagebackground/1703563388/CTU_Blank_white.png) no-repeat fixed 0 0;
+    background-size: cover;
+    position: relative;
+    text-shadow: none !important;
+    color: #555;
+    padding-top: 25px;
+    /* transition: padding-left 1s; */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
