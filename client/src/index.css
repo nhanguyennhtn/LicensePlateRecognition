@@ -4,7 +4,7 @@ body {
     position: relative;
     text-shadow: none !important;
     color: #555;
-    padding-top: 25px;
+    /* padding-top: 25px; */
     /* transition: padding-left 1s; */
 }
 
