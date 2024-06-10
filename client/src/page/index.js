@@ -3,21 +3,37 @@ import '../assets/scss/HomePage.scss'
 import Webcam from 'react-webcam';
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import WebcamComponent from "../components/WebcamComponent";
 
-export   default function HomePage() {
+export default function HomePage() {
     const [biensoND1, setBiensoND1] = useState('')
     const [biensoND2, setBiensoND2] = useState('')
     const [baixe, setBaixe] = useState('BX001')
     const [result, setResult] = useState([])
+    const [capturing, setCapturing] = useState(true);
 
     const webcamRef = useRef(null);
     const [imageSrc, setImageSrc] = useState('')
     const [, setShowWebcam] = useState(true)
+    const videoConstraints = {
+        width: 1280,
+        height: 720,
+        facingMode: "environment"
+    };
+    const box = [
+        { x: 50, y: 50, width: 100, height: 100 },
+        { x: 200, y: 200, width: 150, height: 150 },
+        // Các tọa độ khác trả về từ YOLOv8
+    ];
 
     useEffect(() => {
+        if (capturing) {
+            const interval = setInterval(() => {
+                capture();
+            }, 2000);
+            return () => clearInterval(interval);
+        }
         fetchData()
-    }, [biensoND1, biensoND2])
+    }, [capturing, biensoND1, biensoND2])
 
     const fetchData = () => {
         axios.get(`http://localhost:5000/api/search_by_plate`, {
@@ -36,6 +52,19 @@ export   default function HomePage() {
         const imageSrc = webcamRef.current.getScreenshot();
         setImageSrc(imageSrc)
         setShowWebcam(false)
+
+        axios.post('http://localhost:5000/api/webcam-model', { image: imageSrc })
+            .then(response => {
+                const { detected, processed_image } = response.data;
+                if (detected) {
+                    setCapturing(false);
+                }
+
+                setImageSrc(processed_image);
+            })
+            .catch(error => {
+                console.error("There was an error processing the image!", error);
+            });
     }, [webcamRef])
 
     const handleSubmit = (event) => {
@@ -62,9 +91,8 @@ export   default function HomePage() {
             });
         fetchData()
     }
-    // console.log(result, 'jj');   
 
-    
+
 
     return (
         <div>
@@ -79,14 +107,31 @@ export   default function HomePage() {
                                     <div className="card algin col-xxl-12 ms-2">
                                         <label className="text-center text-uppercase fw-bold">Thông tin xe vào</label>
                                         <div className="card">
-                                            {/* <button type="button" onClick={capture}>Chụp ảnh</button> */}
-                                            <WebcamComponent/>
+                                            <Webcam
+                                                audio={false}
+                                                ref={webcamRef}
+                                                screenshotFormat="image/jpeg"
+                                                width={640}
+                                                height={480}
+                                                videoConstraints={videoConstraints}
+                                                style={{ width: '100%', height: 'auto' }}
+                                            />
+                                            {/* <video ref={webcamRef} autoPlay playsInline/> */}
                                         </div>
                                         <div className="d-inline-flex gap-3 ms-1">
                                             <div className="card col " >
                                                 {imageSrc ? (
                                                     <div>
-                                                        <img src={imageSrc} alt="Captured" className="w-100" />
+                                                        <img src={imageSrc}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                border: '2px solid red',
+                                                                left: `${box.x}px`,
+                                                                top: `${box.y}px`,
+                                                                width: `${box.width}px`,
+                                                                height: `${box.height}px`
+                                                            }}
+                                                            alt="Captured" className="w-100" />
                                                     </div>
                                                 )
                                                     :

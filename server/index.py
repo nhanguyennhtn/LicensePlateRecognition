@@ -31,9 +31,9 @@ app.register_blueprint(auth)
 app.register_blueprint(services_bp)
 CORS(app)
 
-@app.route('/',methods=['GET'])
-def index():
-    return 'hiiii'
+# @app.route('/',methods=['GET'])
+# def index():
+#     return 'hiiii'
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
