@@ -7,10 +7,11 @@ import tkinter as tk
 from tkinter import filedialog
 
 # Khởi tạo mô hình
-model = YOLO('F:/Data_TT/bestAuto43.pt')
+model = YOLO('"D:/TTTe/code/Version_Kq/bestAuto43.pt"')
+
 
 # Đường dẫn đến hình ảnh đầu vào
-image_path = 'F:/Data_TT/anhtest/test1.jpg'
+image_path = '../code/AnhTest/BSX (2489).jpg'
 
 # Đọc hình ảnh
 image = Image.open(image_path)
