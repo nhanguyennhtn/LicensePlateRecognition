@@ -14,7 +14,6 @@ from tkinter import filedialog
 webcam_bp = Blueprint('webcam', __name__)
 
 # Load the YOLOv8 model
-model = YOLO("D:/DHCT/TTThe/New folder/MachineLearningBSxe/bestAuto43.pt")
 reader = easyocr.Reader(['en'])
 
 
