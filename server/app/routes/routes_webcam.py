@@ -8,7 +8,7 @@ import numpy as np
 webcam_bp = Blueprint('webcam', __name__)
 
 # Load the YOLOv8 model
-model = YOLO("D:/DHCT/TTThe/LicensePlateRecognition/server/best_epoch_19.pt")
+model = YOLO("F:/Data_TT/bestAuto43.pt")
 
 def decode_image(image_data):
     header, encoded = image_data.split(",", 1)
@@ -75,7 +75,7 @@ def upload_frame_external():
                 print(obj[0], "tại tọa độ:", obj[1])
 
         # Ghi kết quả vào tệp tin
-        file_name = "D:/DHCT/TTThe/LicensePlateRecognition/training/BienSo.txt"
+        file_name = "F:/Data_TT/BienSo.txt"
         with open(file_name, "w") as file:
             for obj in sorted_objects:
                 if obj[0] != 'box':
@@ -83,7 +83,7 @@ def upload_frame_external():
         print("\nĐã lưu trữ vào tệp tin '{}'.".format(file_name))
 
         # Hiển thị và lưu ảnh dự đoán
-        results[0].save('D:/DHCT/TTThe/LicensePlateRecognition/training/')
+        results[0].save('F:/Data_TT/KQ')
 
         # Chuyển ảnh đã xử lý về dạng base64
         image_pil = Image.fromarray(image_np)
