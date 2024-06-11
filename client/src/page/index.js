@@ -55,12 +55,12 @@ export default function HomePage() {
 
         axios.post('http://localhost:5000/api/webcam-model', { image: imageSrc })
             .then(response => {
-                const { detected, processed_image } = response.data;
-                if (detected) {
-                    setCapturing(false);
-                }
+                const { ocr_result, detected_objects } = response.data;
+                // if (ocr_result) {
+                //     setCapturing(false);
+                // }
 
-                setImageSrc(processed_image);
+                // // setImageSrc(detected_objects);
             })
             .catch(error => {
                 console.error("There was an error processing the image!", error);
@@ -91,8 +91,6 @@ export default function HomePage() {
             });
         fetchData()
     }
-
-
 
     return (
         <div>

@@ -7,10 +7,10 @@ import tkinter as tk
 from tkinter import filedialog
 
 # Khởi tạo mô hình
-model = YOLO('D:\DHCT\TTThe\LicensePlateRecognition\training\bestAuto43.pt')
+model = YOLO("D:/DHCT/TTThe/New folder/MachineLearningBSxe/bestAuto43.pt")
 
 # Đường dẫn đến hình ảnh đầu vào
-image_path = 'F:/Data_TT/anhtest/test1.jpg'
+image_path = 'D:/DHCT/TTThe/LicensePlateRecognition/client/src/assets/img/xemay (84).jpg'
 
 # Đọc hình ảnh
 image = Image.open(image_path)
@@ -79,5 +79,5 @@ for detection in ocr_result:
 results[0].show()
 
 # Lưu ảnh dự đoán
-save_path = 'F:/Data_TT/kq.jpg'
+save_path = 'D:\DHCT\TTThe\LicensePlateRecognition\training/kq.jpeg'
 results[0].save(save_path)
