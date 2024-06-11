@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const WebcamComponent = () => {
-  const cameraUrl = "http://10.3.64.24:4747/video";
+  const cameraUrl = "http://192.168.10.14:4747/video";
   const videoRef1 = useRef(null);
   const intervalRef1 = useRef(null);
   const [isProcessing1, setIsProcessing1] = useState(false);

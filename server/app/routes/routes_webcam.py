@@ -8,7 +8,7 @@ import numpy as np
 webcam_bp = Blueprint('webcam', __name__)
 
 # Load the YOLOv8 model
-model = YOLO("D:/DHCT/TTThe/LicensePlateRecognition/server/best_epoch_19.pt")
+model = YOLO("D:/TTTe/code/Version_Kq/bestAuto43.pt")
 
 def decode_image(image_data):
     header, encoded = image_data.split(",", 1)
@@ -36,7 +36,7 @@ def upload_frame_external():
         # Lấy thông tin các khung bao và nhãn từ kết quả dự đoán
         boxes = results[0].boxes.xyxy.cpu().numpy()  # Tọa độ khung bao
         classes = results[0].boxes.cls.cpu().numpy()  # Các lớp (chỉ số) của các đối tượng
-        names = results.names  # Tên các lớp đối tượng
+        names = results[0].names  # Tên các lớp đối tượng
 
         # Tạo danh sách các đối tượng cùng với tọa độ khung bao
         detected_objects = [(names[int(cls)], (x1, y1, x2, y2)) for cls, (x1, y1, x2, y2) in zip(classes, boxes)]
