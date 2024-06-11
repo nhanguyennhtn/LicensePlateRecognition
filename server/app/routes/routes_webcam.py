@@ -3,8 +3,6 @@ from ultralytics import YOLO
 import base64
 from io import BytesIO
 <<<<<<< Updated upstream
-from PIL import Image, ImageDraw
-import numpy as np
 =======
 import os
 import torch
