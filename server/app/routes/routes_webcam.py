@@ -1,6 +1,11 @@
 from flask import Flask, request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint
 from ultralytics import YOLO
+from PIL import Image
+import numpy as np
+import easyocr
 import base64
+import io
 from io import BytesIO
 <<<<<<< Updated upstream
 =======
@@ -34,17 +39,25 @@ def encode_image(image):
     encoded_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
     return encoded_image
 =======
+    return image
+
+
+def save_image_as_jpeg(image, file_path):
+    image.save(file_path, format="JPEG")
+
 def filter_ocr_result(ocr_result):
     filtered_result = []
     for detection in ocr_result:
         text = detection[1]  # Giả sử detection là một tuple và text là phần tử thứ hai
         filtered_text = ''.join([char for char in text if char not in ['-', '"', '.','*',' ',',']])
+        filtered_text = ''.join([char for char in text if char not in ['-', '"', '.','*',' ']])
         filtered_result.append(filtered_text)
     return filtered_result
 >>>>>>> Stashed changes
 
 @webcam_bp.route('/api/webcam-model', methods=['POST'])
 def upload_frame_external():
+def detect():
     data = request.get_json()
     if 'image' not in data:
         return jsonify({'error': 'No image provided'}), 400
@@ -60,6 +73,8 @@ def upload_frame_external():
         classes = results[0].boxes.cls.cpu().numpy()  # Các lớp (chỉ số) của các đối tượng
         names = results[0].names  # Tên các lớp đối tượng
 =======
+    image_base64 = data['image']
+
     # Đo thời gian giải mã hình ảnh từ base64
     start_time = time.time()
     image = decode_image(image_base64)
@@ -159,6 +174,11 @@ def upload_frame_external():
     else:
         return jsonify({'detections': [], 'image': None})
 =======
+
+        for cls, (x1, y1, x2, y2) in zip(classes, boxes):
+            name = names[int(cls)]
+            x1, y1, x2, y2 = x1.item(), y1.item(), x2.item(), y2.item()
+
             if cls == 31:
                 detected_objects.append((name, (x1, y1, x2, y2)))
                 cropped_image = image.crop((x1, y1, x2, y2))
@@ -192,3 +212,4 @@ def upload_frame_external():
 
     return jsonify(response)
 >>>>>>> Stashed changes
+    return jsonify(response)
