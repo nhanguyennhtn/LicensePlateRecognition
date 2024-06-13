@@ -10,6 +10,7 @@ from app.routes.routes_xe import Thongtinxe_bp
 from app.routes.routes_nhandang import nhandang_bp
 from app.routes.routes_baixe import baixe_bp
 from app.routes.routes_webcam import webcam_bp
+from app.routes.routes_webcam1 import webcam1_bp
 from app.services.login import auth
 from app.services.services_app import services_bp
 from flask_cors import CORS
@@ -27,6 +28,7 @@ app.register_blueprint(Thongtinxe_bp)
 app.register_blueprint(nhandang_bp)
 app.register_blueprint(baixe_bp)
 app.register_blueprint(webcam_bp)
+app.register_blueprint(webcam1_bp)
 app.register_blueprint(auth)
 app.register_blueprint(services_bp)
 CORS(app)
@@ -36,4 +38,4 @@ CORS(app)
 #     return 'hiiii'
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
