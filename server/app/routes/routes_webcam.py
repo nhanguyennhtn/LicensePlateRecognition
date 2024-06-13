@@ -117,8 +117,8 @@ def detect():
             sorted_object_strings.append(f"{obj[0][0]}")
     combined_string = "".join(sorted_object_strings)
      
-    font = ImageFont.truetype("arial.ttf", size=13)    
-     
+
+    font = ImageFont.truetype("arial.ttf", size=13)     
     # Tìm tọa độ của nhãn "box"
     box_coords = None
     for name, (x1, y1, x2, y2) in detected_objects:
@@ -146,6 +146,11 @@ def detect():
 
     # Chuyển ảnh đã cắt thành base64
     result_image_base64 = image_to_base64(cropped_image)
+     
+    # draw = ImageDraw.Draw(image)
+    # for name, (x1, y1, x2, y2) in detected_objects:
+    #     draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
+    #     draw.text((x1, y1), name, fill="red")
 
     # Chuyển ảnh thành base64
     result_image_base64 = image_to_base64(cropped_image)
