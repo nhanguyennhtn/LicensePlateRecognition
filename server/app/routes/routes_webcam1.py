@@ -8,7 +8,7 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 import time
 
-webcam_bp = Blueprint('webcam', __name__)
+webcam1_bp = Blueprint('webcam1', __name__)
 
 # Load the YOLOv8 model
 model = YOLO("D:/TTTe/code/Version_Kq/bestAuto43.pt")
@@ -27,7 +27,7 @@ def image_to_base64(image):
 def save_image_as_jpeg(image, file_path):
     image.save(file_path, format="JPEG")
 
-@webcam_bp.route('/api/webcam-model', methods=['POST'])
+@webcam1_bp.route('/api/webcam-model1', methods=['POST'])
 def detect():
     data = request.get_json()
     image_base64 = data['image']
