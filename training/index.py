@@ -7,10 +7,11 @@ import tkinter as tk
 from tkinter import filedialog
 
 # Khởi tạo mô hình
-model = YOLO("D:/DHCT/TTThe/New folder/MachineLearningBSxe/bestAuto43.pt")
+model = YOLO('"D:/TTTe/code/Version_Kq/bestAuto43.pt"')
+
 
 # Đường dẫn đến hình ảnh đầu vào
-image_path = 'D:/DHCT/TTThe/LicensePlateRecognition/client/src/assets/img/xemay (84).jpg'
+image_path = '../code/AnhTest/BSX (2489).jpg'
 
 # Đọc hình ảnh
 image = Image.open(image_path)
@@ -23,8 +24,8 @@ reader = easyocr.Reader(['en'])
 
 # Kiểm tra kết quả dự đoán
 detected_objects = []
-chars = []
-converted_labels = []
+# chars = []
+# converted_labels = []
 
 for result in results:
     # Lấy thông tin các khung bao và nhãn từ kết quả dự đoán
@@ -44,30 +45,7 @@ for result in results:
             cropped_image = np.array(cropped_image)
             # Trích xuất văn bản từ hình ảnh sử dụng easyocr
             ocr_result = reader.readtext(cropped_image)
-        else:
-            chars.append(name)
-            x_cent = (x1 + x2) // 2
-            y_cent = (y1 + y2) // 2
-            converted_labels.append((x_cent, y_cent))
-
-# Hàm định dạng biển số
-def format_LP(chars, char_centers):
-    x = [c[0] for c in char_centers]
-    y = [c[1] for c in char_centers]
-    y_mean = np.mean(y)
-
-    if y_mean - min(y) < 0.1:
-        return [i for _, i in sorted(zip(x, chars))]
-
-    sorted_chars = [i for _, i in sorted(zip(x, chars))]
-    y = [i for _, i in sorted(zip(x, y))]
-    first_line = [i for i in range(len(chars)) if y[i] < y_mean]
-    second_line = [i for i in range(len(chars)) if y[i] > y_mean]
-    return [sorted_chars[i] for i in first_line] + ['-'] + [sorted_chars[i] for i in second_line]
-
-# Kết hợp kết quả từ easyocr
-final_lab = ''.join(format_LP(chars, converted_labels))
-print("Chuỗi kết quả:", final_lab)
+        # else:
 
 # In kết quả OCR
 print("Kết quả OCR:")
@@ -79,5 +57,7 @@ for detection in ocr_result:
 results[0].show()
 
 # Lưu ảnh dự đoán
-save_path = 'D:\DHCT\TTThe\LicensePlateRecognition\training/kq.jpeg'
+save_path = 'F:/Data_TT/kq.jpg'
 results[0].save(save_path)
+
+#Nhu 11/6/2024

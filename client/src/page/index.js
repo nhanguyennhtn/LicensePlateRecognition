@@ -9,9 +9,7 @@ export default function HomePage() {
     const [biensoND2, setBiensoND2] = useState('')
     const [baixe, setBaixe] = useState('BX001')
     const [result, setResult] = useState([])
-    const [capturing, setCapturing] = useState(true)
-    const [ocrResult, setOcrResult] = useState('')
-    const [detectedObjects, setDetectedObjects] = useState('')
+    const [capturing, setCapturing] = useState(true);
 
     const webcamRef = useRef(null);
     const [imageSrc, setImageSrc] = useState('')
@@ -57,12 +55,12 @@ export default function HomePage() {
 
         axios.post('http://localhost:5000/api/webcam-model', { image: imageSrc })
             .then(response => {
-                const { ocr_result, detected_objects } = response.data;
-                if (ocr_result) {
+                const { detected, processed_image } = response.data;
+                if (detected) {
                     setCapturing(false);
                 }
-                setOcrResult(detected_objects);
-                setDetectedObjects(detected_objects);
+
+                setImageSrc(processed_image);
             })
             .catch(error => {
                 console.error("There was an error processing the image!", error);
@@ -93,6 +91,8 @@ export default function HomePage() {
             });
         fetchData()
     }
+
+
 
     return (
         <div>
