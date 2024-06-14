@@ -55,26 +55,27 @@ def detect():
 
     detected_objects = []
     converted_labels = []
+    confidences = []  # Khai báo biến confidences để lưu trữ độ tin cậy
+    labels_with_confidences = []  # Danh sách chứa các nhãn với độ tin cậy tương ứng
 
     # Đo thời gian xử lý kết quả dự đoán và OCR
     start_time = time.time()
     for result in results:
-        # Lấy thông tin các khung bao và nhãn từ kết quả dự đoán
         boxes = result.boxes.xyxy  # Tọa độ khung bao
         classes = result.boxes.cls  # Các lớp (chỉ số) của các đối tượng
         names = result.names  # Tên các lớp đối tượng
+        confs = result.boxes.conf  # Độ tin cậy của các nhãn
 
-        for cls, (x1, y1, x2, y2) in zip(classes, boxes):
+        for cls, (x1, y1, x2, y2), conf in zip(classes, boxes, confs):
             name = names[int(cls)]
             x1, y1, x2, y2 = x1.item(), y1.item(), x2.item(), y2.item()
             detected_objects.append((name, (x1, y1, x2, y2)))
-
-            # Chuyển đổi tọa độ YOLO thành tọa độ trung bình của các khung bao
-            x_cent = (x1 + x2) / 2
-            y_cent = (y1 + y2) / 2
-            converted_labels.append((x_cent, y_cent))
+            converted_labels.append(((x1 + x2) / 2, (y1 + y2) / 2))
+            confidences.append(conf.item())  # Lưu độ tin cậy vào danh sách confidences
+            labels_with_confidences.append((name, conf.item()))  # Lưu nhãn và độ tin cậy tương ứng
 
     process_results_time = time.time() - start_time
+
 
     # Kiểm tra nếu không có đối tượng nào được phát hiện
     if not converted_labels:
@@ -82,14 +83,6 @@ def detect():
             "detected_objects": [],
             "sorted_objects": [],
             "message": "No objects detected",
-            # "timing": {
-            #     "decode_time": decode_time,
-            #     "save_time": save_time,
-#     "open_time": open_time,
-            #     "predict_time": predict_time,
-            #     "process_results_time": process_results_time,
-            #     "total_time": decode_time + save_time + open_time + predict_time + process_results_time
-            # }
         })
 
     # Tính toán tọa độ trung bình theo trục y của toàn bộ biển số
@@ -107,18 +100,16 @@ def detect():
     # Kết hợp lại hai danh sách đã sắp xếp
     sorted_objects = sorted_upper_half + sorted_lower_half
 
-    # Tổng thời gian xử lý
-    total_time = decode_time + save_time + open_time + predict_time + process_results_time
-
     combined_string = []
     sorted_object_strings = []
+
     for obj in sorted_objects:
         if obj[0][0] != 'box':
             sorted_object_strings.append(f"{obj[0][0]}")
     combined_string = "".join(sorted_object_strings)
-     
-    font = ImageFont.truetype("arial.ttf", size=13)    
-     
+
+    font = ImageFont.truetype("arial.ttf", size=13)
+
     # Tìm tọa độ của nhãn "box"
     box_coords = None
     for name, (x1, y1, x2, y2) in detected_objects:
@@ -126,43 +117,40 @@ def detect():
             box_coords = (x1, y1, x2, y2)
             break
 
-    # Cắt ảnh theo tọa độ của "box"
+    # Cắt ảnh theo tọa độ của "box" và vẽ các đối tượng lên ảnh đã cắt
     if box_coords:
         x1, y1, x2, y2 = box_coords
         cropped_image = image.crop((x1, y1, x2, y2))
-
-        # Vẽ các box và nhãn lên ảnh cắt
         draw = ImageDraw.Draw(cropped_image)
+
         for name, (obj_x1, obj_y1, obj_x2, obj_y2) in detected_objects:
             if name != "box":
-                # Điều chỉnh tọa độ tương đối với hình ảnh đã cắt
                 adj_x1 = obj_x1 - x1
                 adj_y1 = obj_y1 - y1
                 adj_x2 = obj_x2 - x1
                 adj_y2 = obj_y2 - y1
 
                 draw.rectangle([adj_x1, adj_y1, adj_x2, adj_y2], outline="green", width=1)
-                draw.text((adj_x1, adj_y1), name, fill="Blue", font=font)
+                draw.text((adj_x1, adj_y1), name, fill="blue", font=font)
 
     # Chuyển ảnh đã cắt thành base64
-    result_image_base64 = image_to_base64(cropped_image)
-
-    # Chuyển ảnh thành base64
     result_image_base64 = image_to_base64(cropped_image)
 
     response = {
         "detected_objects": detected_objects,
         "yl_result": combined_string,
-         "image_base64": result_image_base64,
+        "image_base64": result_image_base64,
+        "confidences": labels_with_confidences,  # Thêm danh sách confidences vào response
         "timing": {
             "decode_time": decode_time,
             "save_time": save_time,
             "open_time": open_time,
-"predict_time": predict_time,
+            "predict_time": predict_time,
             "process_results_time": process_results_time,
-            "total_time": total_time
+            "total_time": decode_time + save_time + open_time + predict_time + process_results_time
         }
     }
+
     print(" ", combined_string)
     # print("", result_image_base64)
     return jsonify(response)
